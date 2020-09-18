@@ -8,6 +8,7 @@ use App\Models\ConfirmUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -53,7 +54,7 @@ class AuthController extends Controller
 
       //  Auth::login($user);
 
-        $token = str_random(32);
+        $token = Str::random(32);
         $app_url = env('APP_URL', 'localhost');
 
         ConfirmUser::create([
