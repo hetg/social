@@ -45,7 +45,7 @@
                 </div>
                 <hr>
                 <div class="send-block">
-                    <form action="{{ route('messages.send', ['chat_id' => $chat_id]) }}" method="post" role="form">
+                    <form action="{{ route('messages.send', ['chatId' => $chat_id]) }}" method="post" role="form">
                         <div class="form-group{{ $errors->has('message') ? ' has-error' : ''}}">
                             <textarea placeholder="Type here..." name="message" class="form-control" rows="2"></textarea>
                             @if( $errors->has('message') )
