@@ -33,7 +33,7 @@
                     <a href="https://www.facebook.com/denis.popovich.372">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="https://www.linkedin.com/in/denis-popovich/">
+                    <a href="https://www.linkedin.com/in/denys-popovych/">
                         <i class="fab fa-linkedin"></i>
                     </a>
                 </span>
