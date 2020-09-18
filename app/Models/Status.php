@@ -17,11 +17,11 @@ class Status extends Model
     }
 
     public function scopeNotReply($query){
-        return $query->where('parent_id', 0);
+        return $query->where('parent_id', null);
     }
 
     public function scopeReply($query){
-        return $query->where('parent_id', '!=', 0);
+        return $query->where('parent_id', '!=', null);
     }
 
     public function parent(){
