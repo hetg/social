@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Services\AuthService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -15,16 +16,18 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
-    public function __construct()
+    /**
+     * @var AuthService
+     */
+    private $authService;
+
+    public function __construct(AuthService $authService)
     {
+        $this->authService = $authService;
         $this->middleware('auth:api', ['except' => ['login']]);
     }
 
-    public function getSignUp(){
-        return view('auth.signup');
-    }
-
-    public function getEmailConf($token){
+    public function emailConfirmation($token){
         $conf = ConfirmUser::where('token', $token)->first();
 
         if(!$conf){
@@ -43,7 +46,7 @@ class AuthController extends Controller
             ->with('success', 'Profile activated!');
     }
 
-    public function postSignUp(Request $request){
+    public function register(Request $request){
         $this->validate($request, [
             'email' => 'required|unique:users|unique:conf_users|email|max:255',
             'first_name' => 'required|alpha|max:20',
@@ -83,10 +86,6 @@ class AuthController extends Controller
             ->with('success', 'Your account has been created. Please activate your account');
     }
 
-    public function getSignIn(){
-        return view('auth.signin');
-    }
-
     /**
      * @OA\Post(
      * path="/api/auth/login",
@@ -111,14 +110,12 @@ class AuthController extends Controller
      *        )
      *     )
      * )
+     *
+     * @param LoginRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request, AuthService $authService){
-        $this->validate($request, [
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        return $authService->login($request);
+    public function login(LoginRequest $request){
+        return $this->authService->login($request);
     }
 
     /**
@@ -126,7 +123,7 @@ class AuthController extends Controller
      *     path="/api/auth/me",
      *     summary="Sign in",
      *     description="Login by email, password",
-     *     operationId="authMe",
+     *     operationId="authLogout",
      *     tags={"Auth"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Response(
@@ -147,12 +144,57 @@ class AuthController extends Controller
         return response()->json(['ads'=>11]);
     }
 
-    public function getSignOut(){
-        Cache::pull('user-is-online-'.Auth::user()->id);
+    /**
+     * @OA\Post(
+     *     path="/api/auth/refresh",
+     *     summary="Sign in",
+     *     description="Login by email, password",
+     *     operationId="authRefresh",
+     *     tags={"Auth"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Wrong credentials response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *         )
+     *     ))
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout(){
+        return $this->authService->logout();
+    }
 
-        Auth::logout();
-        return redirect()
-            ->route('home')
-            ->with('success', 'You are successful sign out.');
+    /**
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     summary="Sign in",
+     *     description="Login by email, password",
+     *     operationId="authMe",
+     *     tags={"Auth"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Wrong credentials response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *         )
+     *     ))
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh(){
+        return $this->authService->refresh();
     }
 }
