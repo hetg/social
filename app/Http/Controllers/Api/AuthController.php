@@ -88,26 +88,40 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     * path="/api/auth/login",
-     * summary="Sign in",
-     * description="Login by email, password",
-     * operationId="authLogin",
-     * tags={"Auth"},
-     * @OA\RequestBody(
-     *    required=true,
-     *    description="Pass user credentials",
-     *    @OA\JsonContent(
-     *       required={"email","password"},
-     *       @OA\Property(property="email", type="string", format="email", example="admin@admin.com"),
-     *       @OA\Property(property="password", type="string", format="password", example="password")
-     *    ),
-     * ),
-     * @OA\Response(
-     *    response=422,
-     *    description="Wrong credentials response",
-     *    @OA\JsonContent(
-     *       @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
-     *        )
+     *     path="/api/auth/login",
+     *     summary="Log in",
+     *     description="Log in by email, password",
+     *     operationId="authLogin",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Pass user credentials",
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="admin@admin.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Authorized response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string", example="token")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Wrong credentials response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Not activated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Please activate your account")
+     *         )
      *     )
      * )
      *
@@ -119,46 +133,21 @@ class AuthController extends Controller
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/auth/me",
-     *     summary="Sign in",
-     *     description="Login by email, password",
+     * @OA\Post(
+     *     path="/api/auth/logout",
+     *     summary="Logout",
+     *     description="Logout",
      *     operationId="authLogout",
      *     tags={"Auth"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Response(
      *         response=200,
-     *         description="Wrong credentials response",
+     *         description="Logged out response",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *             @OA\Property(property="message", type="string", example="Successfully logged out")
      *         )
-     *     ))
-     * @OAS\SecurityScheme(
-     *     securityScheme="bearerToken",
-     *     type="http",
-     *     scheme="bearer"
+     *     )
      * )
-     */
-    public function me()
-    {
-        return response()->json(['ads'=>11]);
-    }
-
-    /**
-     * @OA\Post(
-     *     path="/api/auth/refresh",
-     *     summary="Sign in",
-     *     description="Login by email, password",
-     *     operationId="authRefresh",
-     *     tags={"Auth"},
-     *     security={ {"bearerToken": {} }},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Wrong credentials response",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
-     *         )
-     *     ))
      * @OAS\SecurityScheme(
      *     securityScheme="bearerToken",
      *     type="http",
@@ -173,19 +162,20 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/auth/logout",
-     *     summary="Sign in",
-     *     description="Login by email, password",
-     *     operationId="authMe",
+     *     path="/api/auth/refresh",
+     *     summary="Refresh JWT token",
+     *     description="Refresh JWT token",
+     *     operationId="authRefresh",
      *     tags={"Auth"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Response(
      *         response=200,
-     *         description="Wrong credentials response",
+     *         description="Token refreshed response",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *             @OA\Property(property="access_token", type="string", example="token")
      *         )
-     *     ))
+     *     )
+     * )
      * @OAS\SecurityScheme(
      *     securityScheme="bearerToken",
      *     type="http",

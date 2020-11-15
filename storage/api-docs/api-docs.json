@@ -10,8 +10,8 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Sign in",
-                "description": "Login by email, password",
+                "summary": "Log in",
+                "description": "Log in by email, password",
                 "operationId": "authLogin",
                 "requestBody": {
                     "description": "Pass user credentials",
@@ -41,6 +41,22 @@
                     }
                 },
                 "responses": {
+                    "200": {
+                        "description": "Authorized response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
                     "422": {
                         "description": "Wrong credentials response",
                         "content": {
@@ -56,28 +72,44 @@
                                 }
                             }
                         }
-                    }
-                }
-            }
-        },
-        "/api/auth/me": {
-            "get": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Sign in",
-                "description": "Login by email, password",
-                "operationId": "authLogout",
-                "responses": {
-                    "200": {
-                        "description": "Wrong credentials response",
+                    },
+                    "403": {
+                        "description": "Not activated response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Sorry, wrong email address or password. Please try again"
+                                            "example": "Please activate your account"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout",
+                "description": "Logout",
+                "operationId": "authLogout",
+                "responses": {
+                    "200": {
+                        "description": "Logged out response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out"
                                         }
                                     },
                                     "type": "object"
@@ -98,52 +130,19 @@
                 "tags": [
                     "Auth"
                 ],
-                "summary": "Sign in",
-                "description": "Login by email, password",
+                "summary": "Refresh JWT token",
+                "description": "Refresh JWT token",
                 "operationId": "authRefresh",
                 "responses": {
                     "200": {
-                        "description": "Wrong credentials response",
+                        "description": "Token refreshed response",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "message": {
+                                        "access_token": {
                                             "type": "string",
-                                            "example": "Sorry, wrong email address or password. Please try again"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ]
-            }
-        },
-        "/api/auth/logout": {
-            "post": {
-                "tags": [
-                    "Auth"
-                ],
-                "summary": "Sign in",
-                "description": "Login by email, password",
-                "operationId": "authMe",
-                "responses": {
-                    "200": {
-                        "description": "Wrong credentials response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Sorry, wrong email address or password. Please try again"
+                                            "example": "token"
                                         }
                                     },
                                     "type": "object"

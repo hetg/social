@@ -70,7 +70,7 @@ class AuthService
      */
     public function refresh()
     {
-        return response()->json(['access_token' => $this->auth->getToken()]);
+        return response()->json(['access_token' => $this->auth->parseToken()->refresh()]);
     }
 
 }
