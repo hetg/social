@@ -50,6 +50,10 @@
                                         "access_token": {
                                             "type": "string",
                                             "example": "token"
+                                        },
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": "1"
                                         }
                                     },
                                     "type": "object"
@@ -133,6 +137,52 @@
                 "summary": "Refresh JWT token",
                 "description": "Refresh JWT token",
                 "operationId": "authRefresh",
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ]
+            }
+        },
+        "/api/user/{userId}": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Get user by ID",
+                "description": "Get user by ID",
+                "operationId": "userGet",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Token refreshed response",

@@ -43,7 +43,12 @@ class AuthService
             return response()->json(['message' => 'Please activate your account'], 403);
         }
 
-        return response()->json(['access_token' => $token]);
+        return response()->json(
+            [
+                'access_token' => $token,
+                'user_id' => $user->id
+            ]
+        );
     }
 
 
