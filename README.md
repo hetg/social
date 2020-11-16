@@ -22,4 +22,8 @@ Also you need to create symlinks
 
 `php artisan storage:link`
 
+Last thing -- create JWT Token secret
+
+`php artisan jwt:secret`
+
 **Hurray!!!**

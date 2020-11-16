@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Services\AuthService;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
 use App\Models\User;
 use App\Models\ConfirmUser;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -106,7 +105,8 @@ class AuthController extends Controller
      *         response=200,
      *         description="Authorized response",
      *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", example="token")
+     *             @OA\Property(property="access_token", type="string", example="token"),
+     *             @OA\Property(property="user_id", type="integer", example="1")
      *         )
      *     ),
      *     @OA\Response(
@@ -126,7 +126,7 @@ class AuthController extends Controller
      * )
      *
      * @param LoginRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function login(LoginRequest $request){
         return $this->authService->login($request);
@@ -154,7 +154,7 @@ class AuthController extends Controller
      *     scheme="bearer"
      * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function logout(){
         return $this->authService->logout();
@@ -182,7 +182,7 @@ class AuthController extends Controller
      *     scheme="bearer"
      * )
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function refresh(){
         return $this->authService->refresh();
