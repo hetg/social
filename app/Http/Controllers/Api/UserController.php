@@ -33,7 +33,7 @@ class UserController extends Controller
      *     summary="Get user by ID",
      *     description="Get user by ID",
      *     operationId="userGet",
-     *     tags={"Auth"},
+     *     tags={"User"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Parameter(
      *         description="ID of user",
@@ -50,7 +50,7 @@ class UserController extends Controller
      *         response=200,
      *         description="Token refreshed response",
      *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", example="token")
+     *             @OA\Property(property="user", type="object", example="User")
      *         )
      *     )
      * )
