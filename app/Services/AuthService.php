@@ -67,17 +67,22 @@ class AuthService
         $token = Str::random(32);
         $app_url = env('APP_URL', 'localhost');
 
-        ConfirmUser::create([
+        $confirmUser = ConfirmUser::create([
             'email' => $request->input('email'),
             'token' => $token
         ]);
 
-        Mail::send('auth.email_token',['token'=>$token, 'app_url'=>$app_url],function($u) use ($user)
-        {
-            $u->from('heals.network@gmail.com');
-            $u->to($user->email);
-            $u->subject('Confirm registration');
-        });
+        try {
+            Mail::send('auth.email_token', ['token' => $token, 'app_url' => $app_url], function ($u) use ($user) {
+                $u->from('heals.network@gmail.com');
+                $u->to($user->email);
+                $u->subject('Confirm registration');
+            });
+        }catch (\Exception $exception){
+            $user->delete();
+            $confirmUser->delete();
+            return response()->json(['message' => 'Something wrong with email sending, please try again later'], 500);
+        }
 
         return response()->json(['user_id' => $user->id], 201);
     }

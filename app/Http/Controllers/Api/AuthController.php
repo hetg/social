@@ -24,7 +24,6 @@ class AuthController extends Controller
     public function __construct(AuthService $authService)
     {
         $this->authService = $authService;
-        $this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -38,7 +37,7 @@ class AuthController extends Controller
      *         required=true,
      *         description="Pass user credentials",
      *         @OA\JsonContent(
-     *             required={"email","password"},
+     *             required={"email","password", "password_confirmation", "first_name", "last_name"},
      *             @OA\Property(property="email", type="string", format="email", example="admin@admin.com"),
      *             @OA\Property(property="password", type="string", format="password", example="password"),
      *             @OA\Property(property="password_confirmation", type="string", format="password", example="password"),
@@ -55,9 +54,9 @@ class AuthController extends Controller
      *     ),
      *     @OA\Response(
      *         response=422,
-     *         description="Wrong credentials response",
+     *         description="Error: Unprocessable Entity",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Sorry, wrong email address or password. Please try again")
+     *             @OA\Property(property="message", type="string", example="The given data was invalid.")
      *         )
      *     )
      * )
