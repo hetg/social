@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdatePasswordRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Services\UserService;
@@ -171,57 +172,52 @@ class UserController extends Controller
         return $this->userService->updateUserPassword($userId, $request);
     }
 
-    public function postEditAvatar(Request $request){
-        if($request->hasFile('avatar')) {
-            $user = Auth::user();
-            $avatar = $request->file('avatar');
-            $filename = Uuid::generate() . '.' . $avatar->getClientOriginalExtension();
-
-            if ($avatar->getClientOriginalExtension() == "jpg" || $avatar->getClientOriginalExtension() == "png" || $avatar->getClientOriginalExtension() == "jpeg") {
-                if ($user->avatar !== 'default.png') {
-                    $file = public_path('storage/images/avatar/' . $user->avatar);
-                    $file_small = public_path('storage/images/avatar/smalls/' . $user->avatar);
-
-                    if (File::exists($file)) {
-                        unlink($file);
-                    }
-
-                    if (File::exists($file_small)) {
-                        unlink($file_small);
-                    }
-
-                }
-
-                $img = Image::make($avatar->getRealPath());
-                $img->resize(300, 300, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-
-                $img->stream(); // <-- Key point
-
-                //dd();
-                Storage::disk('public')->put('images/avatar/'.$filename, $img, 'public');
-
-                $img->resize(120, 120, function ($constraint) {
-                    $constraint->aspectRatio();
-                });
-
-                $img->stream(); // <-- Key point
-
-                Storage::disk('public')->put('images/avatar/smalls/'.$filename, $img, 'public');
-
-                Auth::user()->update([
-                    'avatar' => $filename
-                ]);
-            } else {
-                return redirect()
-                    ->back()
-                    ->with('danger', 'Wrong file format.');
-            }
-        }
-
-        return redirect()
-            ->route('profile.edit')
-            ->with('success', 'Your avatar has been updated.');
+    /**
+     * @OA\Post(
+     *     path="/api/user/{userId}/avatar",
+     *     summary="Update user's avatar by ID",
+     *     description="Update user avatar by ID",
+     *     operationId="userPostAvatar",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User info",
+     *         @OA\Schema(
+     *             @OA\Property(property="avatar", type="object", ref="#/components/schemas/File"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @param UserUpdateAvatarRequest $request
+     * @return void
+     * @throws \Exception
+     */
+    public function updateUserAvatar(int $userId, UserUpdateAvatarRequest $request){
+        $this->userService->updateUserAvatar($userId, $request);
     }
 }
