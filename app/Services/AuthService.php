@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\ConfirmUser;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Tymon\JWTAuth\JWTAuth;
 
 class AuthService
@@ -51,6 +55,32 @@ class AuthService
         );
     }
 
+    public function register(RegisterRequest $request): JsonResponse
+    {
+        $user = User::create([
+            'email' => $request->input('email'),
+            'first_name' => $request->input('first_name'),
+            'last_name' => $request->input('last_name'),
+            'password' => bcrypt($request->input('password'))
+        ]);
+
+        $token = Str::random(32);
+        $app_url = env('APP_URL', 'localhost');
+
+        ConfirmUser::create([
+            'email' => $request->input('email'),
+            'token' => $token
+        ]);
+
+        Mail::send('auth.email_token',['token'=>$token, 'app_url'=>$app_url],function($u) use ($user)
+        {
+            $u->from('heals.network@gmail.com');
+            $u->to($user->email);
+            $u->subject('Confirm registration');
+        });
+
+        return response()->json(['user_id' => $user->id], 201);
+    }
 
     /**
      * Log the user out (Invalidate the token)

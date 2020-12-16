@@ -67,7 +67,7 @@ class UserController extends Controller
         return $this->userService->getUser($userId);
     }
 
-    public function postEdit(Request $request){
+    public function updateUser(Request $request){
         $this->validate($request, [
             'first_name' => 'alpha|max:50',
             'last_name' => 'alpha|max:50',
