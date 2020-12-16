@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdatePasswordRequest;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -173,11 +174,11 @@ class UserController extends Controller
     }
 
     /**
-     * @OA\Post(
-     *     path="/api/user/{userId}/avatar",
-     *     summary="Update user's avatar by ID",
-     *     description="Update user avatar by ID",
-     *     operationId="userPostAvatar",
+     * @OA\Get(
+     *     path="/api/user/{userId}/friends",
+     *     summary="Get user's friends by ID",
+     *     description="Get user's friends by ID",
+     *     operationId="userGetFriends",
      *     tags={"User"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Parameter(
@@ -191,11 +192,96 @@ class UserController extends Controller
      *             format="int64"
      *         )
      *     ),
-     *     @OA\RequestBody(
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="friends", type="string", example="[]")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getFriends(int $userId){
+        return $this->userService->getUserFriends($userId);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/user/{userId}/friend-requests",
+     *     summary="Get user's friend requests by ID",
+     *     description="Get user's friend requests by ID",
+     *     operationId="userGetFriendRequests",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
      *         required=true,
-     *         description="User info",
+     *         example="1",
      *         @OA\Schema(
-     *             @OA\Property(property="avatar", type="object", ref="#/components/schemas/File"),
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="friends", type="string", example="[]")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getFriendRequests(int $userId)
+    {
+        return $this->userService->getUserFriendRequests($userId);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/user/{userId}/add/{friendId}",
+     *     summary="Add friend by ID",
+     *     description="Add friend by ID",
+     *     operationId="userAddFriend",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID of friend",
+     *         in="path",
+     *         name="friendId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
      *         )
      *     ),
      *     @OA\Response(
@@ -213,10 +299,50 @@ class UserController extends Controller
      * )
      *
      * @param int $userId
-     * @param UserUpdateAvatarRequest $request
-     * @return void
-     * @throws \Exception
+     * @param int $friendId
+     * @return JsonResponse
      */
+    public function addFriend(int $userId, int $friendId){
+        return $this->userService->addFriend($userId, $friendId);
+    }
+
+    public function getAccept($user_id){
+        $user = User::where('id', $user_id)->first();
+
+        if (!$user){
+            return redirect()
+                ->route('home')
+                ->with('danger', 'That user could not be found.');
+        }
+
+        if (!Auth::user()->hasFriendRequestReceived($user)){
+            return redirect()->route('home');
+        }
+
+        Auth::user()->acceptFriendRequest($user);
+
+        return redirect()
+            ->route('profile.index', ['user_id' => $user_id])
+            ->with('success', 'Friend request accepted.');
+    }
+
+    public function postDelete($user_id){
+        $user = User::where('id', $user_id)->first();
+
+        if (!Auth::user()->isFriendsWith($user)){
+            return redirect()
+                ->route('profile.index', ['user_id' => $user_id])
+                ->with('danger', 'It is not your friend.');
+        }
+
+        Auth::user()->deleteFriend($user);
+
+        return redirect()
+            ->route('profile.index', ['user_id' => $user_id])
+            ->with('success', 'Friend deleted.');
+    }
+
+    
     public function updateUserAvatar(int $userId, UserUpdateAvatarRequest $request){
         $this->userService->updateUserAvatar($userId, $request);
     }

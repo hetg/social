@@ -35,6 +35,39 @@ class UserService
         return response()->json($user);
     }
 
+    /**
+     * Get user friends
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserFriends(int $userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        return response()->json($user->friends());
+    }
+
+    /**
+     * Get user friend requests
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserFriendRequests(int $userId)
+    {
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        return response()->json($user->friendRequests());
+    }
 
     /**
      * Update user's info
@@ -154,6 +187,37 @@ class UserService
         }
 
         return response()->json($user);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $friendId
+     * @return JsonResponse
+     */
+    public function addFriend(int $userId, int $friendId)
+    {
+        $user = User::find($userId);
+        $friend = User::find($friendId);
+
+        if (!$user || !$friend){
+            abort(404);
+        }
+
+        if ($userId === $friendId){
+            abort(400);
+        }
+
+        if ($user->hasFriendRequestPending($friend) || $friend->hasFriendRequestPending($user)){
+            return response()->json(['message' => 'Friend request already pending.']);
+        }
+
+        if ($user->isFriendsWith($friend)){
+            return response()->json(['message' => 'You are already friends']);
+        }
+
+        $user->addFriend($friend);
+
+        return response()->json(['message' => 'Friend request sent.']);
     }
 
 }

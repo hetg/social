@@ -36,4 +36,7 @@ Route::group([
     Route::get('{userId}', 'UserController@getUser');
     Route::post('{userId}', 'UserController@updateUser');
     Route::post('{userId}/password', 'UserController@updateUserPassword');
+    Route::get('{userId}/friends', 'UserController@getFriends');
+    Route::get('{userId}/friend-requests', 'UserController@getFriendRequests');
+    Route::post('{userId}/add/{friendId}', 'UserController@addFriend');
 });
