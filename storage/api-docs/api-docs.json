@@ -251,6 +251,47 @@
                 ]
             }
         },
+        "/api/users/{query}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Find users by name",
+                "description": "Fins users by name",
+                "operationId": "usersGet",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "path",
+                        "description": "Name of user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "text"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "user": {
+                                            "type": "object",
+                                            "example": "User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/{userId}": {
             "get": {
                 "tags": [
@@ -576,56 +617,6 @@
                         "example": "1"
                     }
                 ],
-                "responses": {
-                    "200": {
-                        "description": "User's password updated response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "user": {
-                                            "type": "object",
-                                            "example": "User"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerToken": []
-                    }
-                ]
-            }
-        },
-        "/api/user/{userId}/avatar": {
-            "post": {
-                "tags": [
-                    "User"
-                ],
-                "summary": "Update user's avatar by ID",
-                "description": "Update user avatar by ID",
-                "operationId": "userPostAvatar",
-                "parameters": [
-                    {
-                        "name": "userId",
-                        "in": "path",
-                        "description": "ID of user",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "example": "1"
-                    }
-                ],
-                "requestBody": {
-                    "description": "User info",
-                    "required": true
-                },
                 "responses": {
                     "200": {
                         "description": "User's password updated response",
