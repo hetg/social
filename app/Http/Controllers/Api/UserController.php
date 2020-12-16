@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\UserUpdatePasswordRequest;
+use App\Http\Requests\User\UserUpdateRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -33,7 +35,7 @@ class UserController extends Controller
      *     summary="Get user by ID",
      *     description="Get user by ID",
      *     operationId="userGet",
-     *     tags={"Auth"},
+     *     tags={"User"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Parameter(
      *         description="ID of user",
@@ -50,7 +52,7 @@ class UserController extends Controller
      *         response=200,
      *         description="Token refreshed response",
      *         @OA\JsonContent(
-     *             @OA\Property(property="access_token", type="string", example="token")
+     *             @OA\Property(property="user", type="object", example="User")
      *         )
      *     )
      * )
@@ -67,44 +69,106 @@ class UserController extends Controller
         return $this->userService->getUser($userId);
     }
 
-    public function postEdit(Request $request){
-        $this->validate($request, [
-            'first_name' => 'alpha|max:50',
-            'last_name' => 'alpha|max:50',
-            'location' => 'max:20',
-        ]);
-
-        Auth::user()->update([
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'location' => $request->input('location'),
-        ]);
-
-        return redirect()
-            ->route('profile.edit')
-            ->with('success', 'Your profile has been updated.');
+    /**
+     * @OA\Post(
+     *     path="/api/user/{userId}",
+     *     summary="Update user by ID",
+     *     description="Update user by ID",
+     *     operationId="userPost",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User info",
+     *         @OA\JsonContent(
+     *             required={"first_name","last_name"},
+     *             @OA\Property(property="first_name", type="string", format="text", example="Admin"),
+     *             @OA\Property(property="last_name", type="string", format="text", example="Admin"),
+     *             @OA\Property(property="location", type="string", format="text", example="Uzhhorod")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @param UserUpdateRequest $request
+     * @return JsonResponse
+     */
+    public function updateUser(int $userId, UserUpdateRequest $request){
+        return $this->userService->updateUser($userId, $request);
     }
 
-    public function postEditPass(Request $request){
-        $user = Auth::user();
-
-        Validator::extend('old_password', function($attribute, $value) use ($user) {
-            return Hash::check( $value, $user->password );
-        },'Wrong password!');
-
-        $this->validate($request, [
-            'old_password' => 'required|min:6|max:32|old_password',
-            'password' => 'required|min:6|max:32|confirmed',
-            'password_confirmation' => 'required|min:6|max:32'
-        ]);
-
-        Auth::user()->update([
-            'password' => bcrypt($request->input('password'))
-        ]);
-
-        return redirect()
-            ->route('profile.edit')
-            ->with('success', 'Your profile has been updated.');
+    /**
+     * @OA\Post(
+     *     path="/api/user/{userId}/password",
+     *     summary="Update user's password by ID",
+     *     description="Update user password by ID",
+     *     operationId="userPostPassword",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User info",
+     *         @OA\JsonContent(
+     *             required={"old_password","password","password_confirmation"},
+     *             @OA\Property(property="old_password", type="string", format="password", example="password"),
+     *             @OA\Property(property="password", type="string", format="password", example="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @param UserUpdatePasswordRequest $request
+     * @return JsonResponse
+     */
+    public function updateUserPassword(int $userId, UserUpdatePasswordRequest $request){
+        return $this->userService->updateUserPassword($userId, $request);
     }
 
     public function postEditAvatar(Request $request){

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use App\Models\User;
@@ -23,66 +24,48 @@ class AuthController extends Controller
     public function __construct(AuthService $authService)
     {
         $this->authService = $authService;
-        $this->middleware('auth:api', ['except' => ['login']]);
     }
 
-    public function emailConfirmation($token){
-        $conf = ConfirmUser::where('token', $token)->first();
-
-        if(!$conf){
-            return redirect()
-                ->route('auth.signin')
-                ->with('danger', 'Wrong confirmation token!');
-        }
-
-        $user = User::where('email', $conf->email);
-
-        $user->update(['validate' => 1]);
-        $conf->delete();
-
-        return redirect()
-            ->route('auth.signin')
-            ->with('success', 'Profile activated!');
-    }
-
-    public function register(Request $request){
-        $this->validate($request, [
-            'email' => 'required|unique:users|unique:conf_users|email|max:255',
-            'first_name' => 'required|alpha|max:20',
-            'last_name' => 'required|alpha|max:20',
-            'password' => 'required|min:6|max:32|confirmed',
-            'password_confirmation' => 'required|min:6|max:32'
-        ]);
-
-        $user = User::create([
-            'email' => $request->input('email'),
-            'first_name' => $request->input('first_name'),
-            'last_name' => $request->input('last_name'),
-            'password' => bcrypt($request->input('password'))
-        ]);
-
-        //  Auth::login($user);
-
-        $token = Str::random(32);
-        $app_url = env('APP_URL', 'localhost');
-
-        ConfirmUser::create([
-            'email' => $request->input('email'),
-            'token' => $token
-        ]);
-
-        Mail::send('auth.email_token',['token'=>$token, 'app_url'=>$app_url],function($u) use ($user)
-        {
-            $u->from('heals.network@gmail.com');
-            $u->to($user->email);
-            $u->subject('Confirm registration');
-        });
-
-        // $user->getInfo()->create();
-
-        return redirect()
-            ->route('auth.signin')
-            ->with('success', 'Your account has been created. Please activate your account');
+    /**
+     * @OA\Post(
+     *     path="/api/auth/register",
+     *     summary="Register",
+     *     description="Register by email, password",
+     *     operationId="authRegister",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Pass user credentials",
+     *         @OA\JsonContent(
+     *             required={"email","password", "password_confirmation", "first_name", "last_name"},
+     *             @OA\Property(property="email", type="string", format="email", example="admin@admin.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password"),
+     *             @OA\Property(property="first_name", type="string", format="text", example="Admin"),
+     *             @OA\Property(property="last_name", type="string", format="text", example="Admin")
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Authorized response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user_id", type="integer", example="1")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error: Unprocessable Entity",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid.")
+     *         )
+     *     )
+     * )
+     *
+     * @param RegisterRequest $request
+     * @return JsonResponse
+     */
+    public function register(RegisterRequest $request){
+        return $this->authService->register($request);
     }
 
     /**

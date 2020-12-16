@@ -19,8 +19,21 @@ Route::group([
     'prefix' => 'auth'
 ], function ($router) {
     Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
-    Route::post('refresh', 'AuthController@refresh');
+    Route::post('register', 'AuthController@register');
+    Route::group([
+        'middleware' => 'auth'
+    ], function ($router) {
+        Route::post('logout', 'AuthController@logout');
+        Route::post('refresh', 'AuthController@refresh');
+    }
+    );
 });
 
-Route::middleware('auth:api')->get('/user/{userId}', 'UserController@getUser');
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'user'
+], function ($router) {
+    Route::get('{userId}', 'UserController@getUser');
+    Route::post('{userId}', 'UserController@updateUser');
+    Route::post('{userId}/password', 'UserController@updateUserPassword');
+});
