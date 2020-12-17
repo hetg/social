@@ -11,6 +11,7 @@ use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -29,6 +30,44 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->userService = $userService;
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/users/{query}",
+     *     summary="Find users by name",
+     *     description="Fins users by name",
+     *     operationId="usersGet",
+     *     tags={"User"},
+     *     @OA\Parameter(
+     *         description="Name of user",
+     *         in="path",
+     *         name="query",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="string",
+     *             format="text"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     *
+     * @param string $query
+     * @return JsonResponse
+     */
+    public function find(string $query)
+    {
+        $users = User::where(DB::raw("CONCAT(first_name, ' ', last_name)"), 'LIKE', "%{$query}%")
+            ->get();
+
+        return response()->json($users);
     }
 
     /**
@@ -342,7 +381,7 @@ class UserController extends Controller
             ->with('success', 'Friend deleted.');
     }
 
-    
+
     public function updateUserAvatar(int $userId, UserUpdateAvatarRequest $request){
         $this->userService->updateUserAvatar($userId, $request);
     }

@@ -29,6 +29,8 @@ Route::group([
     );
 });
 
+Route::middleware('api')->get('/users/{query}', 'UserController@find');
+
 Route::group([
     'middleware' => 'auth:api',
     'prefix' => 'user'
