@@ -220,4 +220,73 @@ class UserService
         return response()->json(['message' => 'Friend request sent.']);
     }
 
+    /**
+     * @param int $userId
+     * @param int $friendId
+     * @return JsonResponse
+     */
+    public function acceptFriend(int $userId, int $friendId): JsonResponse
+    {
+        $user = User::find($userId);
+        $friend = User::find($friendId);
+
+        if (!$user || !$friend){
+            abort(404);
+        }
+
+        if ($userId === $friendId){
+            abort(400);
+        }
+
+        if (!$user->hasFriendRequestReceived($friend)){
+            return response()->json(['message' => 'No friends request found'],404);
+        }
+
+        $user->acceptFriendRequest($friend);
+
+        return response()->json(['message' => 'Friend request accepted']);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $friendId
+     * @return JsonResponse
+     */
+    public function deleteFriend(int $userId, int $friendId): JsonResponse
+    {
+        $user = User::find($userId);
+        $friend = User::find($friendId);
+
+        if (!$user || !$friend){
+            abort(404);
+        }
+
+        if ($userId === $friendId){
+            abort(400);
+        }
+
+        if (!$user->isFriendsWith($friend)){
+            return response()->json(['message' => 'It is not your friend'],404);
+        }
+
+        $user->deleteFriend($friend);
+
+        return response()->json(['message' => 'Friend deleted'], 204);
+    }
+
+    /**
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserPosts(int $userId)
+    {
+        /** @var User $user */
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        return response()->json($user->statuses());
+    }
 }
