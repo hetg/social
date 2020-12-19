@@ -9,15 +9,7 @@ use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
-use Intervention\Image\Facades\Image;
-use Webpatser\Uuid\Uuid;
 
 class UserController extends Controller
 {
@@ -449,6 +441,45 @@ class UserController extends Controller
         return $this->userService->deleteFriend($userId, $friendId);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/user/{userId}/posts",
+     *     summary="Get posts by user ID",
+     *     description="Get posts by user ID",
+     *     operationId="postsGet",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="post", type="object", example="Post")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserPosts(int $userId){
+        return $this->userService->getUserPosts($userId);
+    }
 
     public function updateUserAvatar(int $userId, UserUpdateAvatarRequest $request){
         $this->userService->updateUserAvatar($userId, $request);

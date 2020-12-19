@@ -271,6 +271,22 @@ class UserService
 
         $user->deleteFriend($friend);
 
-        return response()->json(['message' => 'Friend deleted']);
+        return response()->json(['message' => 'Friend deleted'], 204);
+    }
+
+    /**
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserPosts(int $userId)
+    {
+        /** @var User $user */
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        return response()->json($user->statuses());
     }
 }
