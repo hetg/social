@@ -38,7 +38,20 @@ Route::group([
     Route::get('{userId}', 'UserController@getUser');
     Route::post('{userId}', 'UserController@updateUser');
     Route::post('{userId}/password', 'UserController@updateUserPassword');
+    Route::post('{userId}/avatar', 'UserController@updateUserAvatar');
     Route::get('{userId}/friends', 'UserController@getFriends');
     Route::get('{userId}/friend-requests', 'UserController@getFriendRequests');
     Route::post('{userId}/add/{friendId}', 'UserController@addFriend');
+    Route::post('{userId}/accept/{friendId}', 'UserController@acceptFriend');
+    Route::delete('{userId}/delete/{friendId}', 'UserController@deleteFriend');
+    Route::get('{userId}/posts', 'StatusController@getPosts');
+});
+
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'post'
+], function ($router) {
+    Route::get('{postId}', 'StatusController@getPost');
+    Route::post('/', 'StatusController@createPost');
+    Route::delete('{postId}', 'StatusController@deletePost');
 });
