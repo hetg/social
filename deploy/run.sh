@@ -7,4 +7,4 @@ git pull
 composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 # Run database migrations
-php artisan migrate --force
+php artisan migrate
