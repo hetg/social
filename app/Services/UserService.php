@@ -33,6 +33,8 @@ class UserService
             abort(404);
         }
 
+        $user->friends = $user->friends();
+
         return response()->json($user);
     }
 
@@ -290,6 +292,26 @@ class UserService
 
         $statuses = Status::notReply()->where(function ($query) use ($user) {
             return $query->where('user_id', $user->id);
+        })->orderBy('created_at', 'desc')->get();
+
+        return response()->json($statuses);
+    }
+
+    /**
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserFeed(int $userId)
+    {
+        /** @var User $user */
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        $statuses = Status::notReply()->where(function ($query) use ($user) {
+            return $query->where('user_id', $user->id)->orWhereIn('user_id', $user->friends()->pluck('id'));
         })->orderBy('created_at', 'desc')->get();
 
         return response()->json($statuses);
