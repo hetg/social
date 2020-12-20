@@ -28,9 +28,17 @@ class User extends Authenticatable implements JWTSubject
 
     protected $hidden = [
         'remember_token',
+        'password'
     ];
 
+    protected $appends = ['is_online'];
+
     public function isOnline()
+    {
+        return Cache::has('user-is-online-' . $this->id);
+    }
+
+    public function getIsOnlineAttribute()
     {
         return Cache::has('user-is-online-' . $this->id);
     }
