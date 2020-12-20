@@ -8,9 +8,11 @@ use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdatePasswordRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
+use App\Services\MessageService;
 use App\Services\StatusService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
@@ -26,10 +28,16 @@ class UserController extends Controller
      */
     private $statusService;
 
-    public function __construct(UserService $userService, StatusService $statusService)
+    /**
+     * @var MessageService
+     */
+    private $messageService;
+
+    public function __construct(UserService $userService, StatusService $statusService, MessageService $messageService)
     {
         $this->userService = $userService;
         $this->statusService = $statusService;
+        $this->messageService = $messageService;
     }
 
     /**
@@ -637,6 +645,46 @@ class UserController extends Controller
      */
     public function createPostReply(int $userId, int $postId, PostCreateRequest $request){
         $this->statusService->createPostReply($userId, $postId, $request);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/user/{userId}/chats",
+     *     summary="Get chats by user ID",
+     *     description="Get chats by user ID",
+     *     operationId="chatsGet",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="post", type="object", example="Post")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getChats(int $userId){
+        return $this->messageService->getChats($userId);
     }
 
     public function updateUserAvatar(int $userId, UserUpdateAvatarRequest $request){
