@@ -344,7 +344,7 @@
         "/api/post/{postId}/like/{userId}": {
             "post": {
                 "tags": [
-                    "User"
+                    "Post"
                 ],
                 "summary": "Update user's password by ID",
                 "description": "Update user password by ID",

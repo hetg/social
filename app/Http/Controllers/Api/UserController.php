@@ -399,7 +399,7 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/user/{userId}/accept/{friendId}",
+     *     path="/api/user/{userId}/delete/{friendId}",
      *     summary="Delete friend by ID",
      *     description="Delete friend by ID",
      *     operationId="userDeleteFriend",
