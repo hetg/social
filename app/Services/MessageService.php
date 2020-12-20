@@ -113,7 +113,7 @@ class MessageService
         if (!$user) abort(404);
         if ($user->id !== Auth::user()->id) abort(403);
 
-        $dialogs = $user->dialogs()->sortByDesc('updated_at');
+        $dialogs = $user->dialogs();
 
         return response()->json($dialogs);
     }

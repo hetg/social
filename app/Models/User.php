@@ -77,7 +77,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function dialogs(){
         return $this->hasMany('App\Models\Dialog', 'first_user_id')->get()
-            ->merge($this->hasMany('App\Models\Dialog', 'second_user_id')->get());
+            ->merge($this->hasMany('App\Models\Dialog', 'second_user_id')->get())->toArray();
     }
 
     public function likes(){
