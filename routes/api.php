@@ -44,6 +44,7 @@ Route::group([
     Route::post('{userId}/add/{friendId}', 'UserController@addFriend');
     Route::post('{userId}/accept/{friendId}', 'UserController@acceptFriend');
     Route::delete('{userId}/delete/{friendId}', 'UserController@deleteFriend');
+    Route::get('{userId}/feed', 'UserController@getUserFeed');
     Route::get('{userId}/posts', 'UserController@getUserPosts');
     Route::post('{userId}/posts', 'UserController@createPost');
     Route::post('{userId}/posts/{postId}/reply', 'UserController@createPostReply');
