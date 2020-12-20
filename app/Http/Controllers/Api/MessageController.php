@@ -185,7 +185,7 @@ class MessageController extends Controller
      *     path="/api/chat/create/{userId}/with/{friendId}",
      *     summary="Send user to chat by ID",
      *     description="Send user to chat by ID",
-     *     operationId="chatSendMessage",
+     *     operationId="chatCreate",
      *     tags={"Chat"},
      *     security={ {"bearerToken": {} }},
      *     @OA\Parameter(

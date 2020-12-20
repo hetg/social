@@ -113,12 +113,6 @@ class MessageService
         if (!$user) abort(404);
         if ($user->id !== Auth::user()->id) abort(403);
 
-        foreach ($user->dialogs() as $dialog){
-            if (!count($dialog->messages()->get())){
-                $dialog->delete();
-            }
-        }
-
         $dialogs = $user->dialogs()->sortByDesc('updated_at');
 
         return response()->json($dialogs);
