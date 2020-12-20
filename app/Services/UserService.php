@@ -33,6 +33,8 @@ class UserService
             abort(404);
         }
 
+        $user->friends = $user->friends();
+
         return response()->json($user);
     }
 

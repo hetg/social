@@ -899,7 +899,9 @@
                         "bearerToken": []
                     }
                 ]
-            },
+            }
+        },
+        "/api/user/{userId}/delete/{friendId}": {
             "delete": {
                 "tags": [
                     "User"
