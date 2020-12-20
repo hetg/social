@@ -44,7 +44,9 @@ Route::group([
     Route::post('{userId}/add/{friendId}', 'UserController@addFriend');
     Route::post('{userId}/accept/{friendId}', 'UserController@acceptFriend');
     Route::delete('{userId}/delete/{friendId}', 'UserController@deleteFriend');
-    Route::get('{userId}/posts', 'StatusController@getPosts');
+    Route::get('{userId}/posts', 'UserController@getUserPosts');
+    Route::post('{userId}/posts', 'UserController@createPost');
+    Route::post('{userId}/posts/{postId}/reply', 'UserController@createPostReply');
 });
 
 Route::group([
@@ -52,6 +54,7 @@ Route::group([
     'prefix' => 'post'
 ], function ($router) {
     Route::get('{postId}', 'StatusController@getPost');
-    Route::post('/', 'StatusController@createPost');
     Route::delete('{postId}', 'StatusController@deletePost');
+    Route::post('{postId}/like/{userId}', 'StatusController@postLike');
+    Route::delete('{postId}/like/{userId}', 'StatusController@deleteLike');
 });

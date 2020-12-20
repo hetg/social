@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Status\PostCreateRequest;
 use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdatePasswordRequest;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\User;
+use App\Services\StatusService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -19,9 +21,15 @@ class UserController extends Controller
      */
     private $userService;
 
-    public function __construct(UserService $userService)
+    /**
+     * @var StatusService
+     */
+    private $statusService;
+
+    public function __construct(UserService $userService, StatusService $statusService)
     {
         $this->userService = $userService;
+        $this->statusService = $statusService;
     }
 
     /**
@@ -479,6 +487,116 @@ class UserController extends Controller
      */
     public function getUserPosts(int $userId){
         return $this->userService->getUserPosts($userId);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/user/{userId}/posts",
+     *     summary="Update user's password by ID",
+     *     description="Update user password by ID",
+     *     operationId="userCreatePost",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User info",
+     *         @OA\JsonContent(
+     *             required={"status"},
+     *             @OA\Property(property="status", type="string", format="text", example="reply"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @param PostCreateRequest $request
+     * @return void
+     */
+    public function createPost(int $userId, PostCreateRequest $request){
+        $this->statusService->createPost($userId, $request);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/user/{userId}/posts/{postId}/reply",
+     *     summary="Update user's password by ID",
+     *     description="Update user password by ID",
+     *     operationId="userCreatePostReply",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID of post",
+     *         in="path",
+     *         name="postId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="User info",
+     *         @OA\JsonContent(
+     *             required={"status"},
+     *             @OA\Property(property="status", type="string", format="text", example="reply"),
+     *         ),
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @param int $postId
+     * @param PostCreateRequest $request
+     * @return void
+     */
+    public function createPostReply(int $userId, int $postId, PostCreateRequest $request){
+        $this->statusService->createPostReply($userId, $postId, $request);
     }
 
     public function updateUserAvatar(int $userId, UserUpdateAvatarRequest $request){
