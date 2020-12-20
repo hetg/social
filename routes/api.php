@@ -48,6 +48,7 @@ Route::group([
     Route::get('{userId}/posts', 'UserController@getUserPosts');
     Route::post('{userId}/posts', 'UserController@createPost');
     Route::post('{userId}/posts/{postId}/reply', 'UserController@createPostReply');
+    Route::get('{userId}/chats', 'UserController@getChats');
 });
 
 Route::group([
@@ -58,4 +59,14 @@ Route::group([
     Route::delete('{postId}', 'StatusController@deletePost');
     Route::post('{postId}/like/{userId}', 'StatusController@postLike');
     Route::delete('{postId}/like/{userId}', 'StatusController@deleteLike');
+});
+
+Route::group([
+    'middleware' => 'auth:api',
+    'prefix' => 'chat'
+], function ($router) {
+    Route::post('create/{userId}/with/{friendId}', 'MessageController@createChat');
+    Route::get('{chatId}', 'MessageController@getMessages');
+    Route::post('{chatId}/send/{userId}', 'MessageController@postMessage');
+    Route::delete('{chatId}/message/{messageId}', 'MessageController@deleteMessage');
 });

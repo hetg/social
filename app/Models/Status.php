@@ -12,7 +12,7 @@ class Status extends Model
         'body',
     ];
 
-    protected $with = array('attachments', 'likes', 'replies');
+    protected $with = array('attachments', 'likes', 'replies', 'user');
 
     public function user(){
         return $this->belongsTo('App\Models\User', 'user_id');
