@@ -79,6 +79,39 @@ class StatusService
     }
 
     /**
+     * @param int $userId
+     * @param int $postId
+     * @param PostCreateRequest $request
+     * @return JsonResponse
+     */
+    public function createPostReply(int $userId, int $postId, PostCreateRequest $request): JsonResponse
+    {
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        $status = Status::notReply()->find($postId);
+
+        if (!$status){
+            abort(404);
+        }
+
+        if (!$user->isFriendsWith($status->user) && $user->id !== $status->user->id){
+            abort(403);
+        }
+
+        $reply = Status::create([
+            'body' => $request->input("status"),
+        ])->user()->associate($user);
+
+        $status->replies()->save($reply);
+
+        return response()->json(['message' => 'Reply posted'], 201);
+    }
+
+    /**
      * @param int $postId
      */
     public function deletePost(int $postId)
@@ -120,5 +153,66 @@ class StatusService
             ['likeable_type', "=" , get_class($post)],
         ])->delete();
         $post->delete();
+    }
+
+    /**
+     * @param int $postId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function createLike(int $postId, int $userId): JsonResponse
+    {
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        $post = Status::find($postId);
+
+        if (!$post){
+            abort(404);
+        }
+
+        if ($user->hasLikedStatus($post)){
+            abort(200);
+        }
+
+        $like = $post->likes()->create([]);
+        $user->likes()->save($like);
+
+        return response()->json(['message' => 'Like added'], 201);
+    }
+
+    /**
+     * @param int $postId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function deleteLike(int $postId, int $userId): JsonResponse
+    {
+        $user = User::find($userId);
+
+        if (!$user){
+            abort(404);
+        }
+
+        $post = Status::find($postId);
+
+        if (!$post){
+            abort(404);
+        }
+
+        if (!$user->hasLikedStatus($post)){
+            abort(200);
+        }
+
+        Like::where([
+            ['user_id', "=" ,$user->id],
+            ['likeable_id', "=" , $post->id],
+            ['likeable_type', "=" , get_class($post)],
+        ])->delete();
+
+        return response()->json(['message' => 'Like removed'], 204);
     }
 }

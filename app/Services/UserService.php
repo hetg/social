@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\User\UserUpdateAvatarRequest;
 use App\Http\Requests\User\UserUpdatePasswordRequest;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Models\Status;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -287,6 +288,10 @@ class UserService
             abort(404);
         }
 
-        return response()->json($user->statuses());
+        $statuses = Status::notReply()->where(function ($query) use ($user) {
+            return $query->where('user_id', $user->id);
+        })->orderBy('created_at', 'desc')->get();
+
+        return response()->json($statuses);
     }
 }
