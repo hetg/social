@@ -958,6 +958,52 @@
                 ]
             }
         },
+        "/api/user/{userId}/feed": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get feed by user ID",
+                "description": "Get feed by user ID",
+                "operationId": "feedGet",
+                "parameters": [
+                    {
+                        "name": "userId",
+                        "in": "path",
+                        "description": "ID of user",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "example": "1"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Token refreshed response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "post": {
+                                            "type": "object",
+                                            "example": "Post"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerToken": []
+                    }
+                ]
+            }
+        },
         "/api/user/{userId}/posts": {
             "get": {
                 "tags": [

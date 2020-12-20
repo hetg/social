@@ -451,6 +451,46 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
+     *     path="/api/user/{userId}/feed",
+     *     summary="Get feed by user ID",
+     *     description="Get feed by user ID",
+     *     operationId="feedGet",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="post", type="object", example="Post")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function getUserFeed(int $userId){
+        return $this->userService->getUserFeed($userId);
+    }
+
+    /**
+     * @OA\Get(
      *     path="/api/user/{userId}/posts",
      *     summary="Get posts by user ID",
      *     description="Get posts by user ID",
