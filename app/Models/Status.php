@@ -12,6 +12,8 @@ class Status extends Model
         'body',
     ];
 
+    protected $with = array('attachments', 'likes', 'replies');
+
     public function user(){
         return $this->belongsTo('App\Models\User', 'user_id');
     }

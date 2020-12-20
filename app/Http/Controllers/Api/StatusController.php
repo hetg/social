@@ -68,71 +68,108 @@ class StatusController extends Controller
         return $this->statusService->getPost($postId);
     }
 
-    public function createPost(int $userId, PostCreateRequest $request){
-        $this->statusService->createPost($userId, $request);
+    /**
+     * @OA\Post(
+     *     path="/api/post/{postId}/like/{userId}",
+     *     summary="Update user's password by ID",
+     *     description="Update user password by ID",
+     *     operationId="postCreateLike",
+     *     tags={"Post"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of post",
+     *         in="path",
+     *         name="postId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $postId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function postLike(int $postId, int $userId){
+        return $this->statusService->createLike($postId, $userId);
     }
 
-    public function postReply(Request $request, $statusId){
-        $this->validate($request, [
-            "reply-{$statusId}" => 'required|max:1000',[
-                'required' => 'The reply body is required.'
-            ]
-        ]);
-
-        $status = Status::notReply()->find($statusId);
-
-        if (!$status){
-            return redirect()->back();
-        }
-
-        if (!Auth::user()->isFriendsWith($status->user) && Auth::user()->id !== $status->user->id){
-            return redirect()->back();
-        }
-
-        $reply = Status::create([
-            'body' => $request->input("reply-{$statusId}"),
-        ])->user()->associate(Auth::user());
-
-        $status->replies()->save($reply);
-
-        return redirect()->back();
-    }
-
-    public function getLike($statusId){
-        $status= Status::find($statusId);
-
-        if (!$status){
-            return redirect()->back();
-        }
-
-        if (Auth::user()->hasLikedStatus($status)){
-            return redirect()->back();
-        }
-
-        $like = $status->likes()->create([]);
-        Auth::user()->likes()->save($like);
-
-        return redirect()->back();
-    }
-
-    public function getUnlike($statusId){
-        $status= Status::find($statusId);
-
-        if (!$status){
-            return redirect()->back();
-        }
-
-        if (!Auth::user()->hasLikedStatus($status)){
-            return redirect()->back();
-        }
-
-        Like::where([
-            ['user_id', "=" ,Auth::user()->id],
-            ['likeable_id', "=" , $status->id],
-            ['likeable_type', "=" , get_class($status)],
-        ])->delete();
-
-        return redirect()->back();
+    /**
+     * @OA\Delete(
+     *     path="/api/post/{postId}/like/{userId}",
+     *     summary="Delete like by ID",
+     *     description="Delete like by ID",
+     *     operationId="postDeleteLike",
+     *     tags={"Post"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of post",
+     *         in="path",
+     *         name="postId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $postId
+     * @param int $userId
+     * @return JsonResponse
+     */
+    public function deleteLike(int $postId, int $userId){
+        return $this->statusService->deleteLike($postId, $userId);
     }
 
     /**
