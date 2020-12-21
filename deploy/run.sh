@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-supervisorctl stop all
+sudo supervisorctl stop all
 
 git pull
 
@@ -11,4 +11,4 @@ composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 # Run database migrations
 php artisan migrate
 
-supervisorctl start all
+sudo supervisorctl start all
