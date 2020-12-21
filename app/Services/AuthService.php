@@ -65,7 +65,7 @@ class AuthService
         ]);
 
         $token = Str::random(32);
-        $app_url = env('APP_URL', 'localhost');
+        $app_url = \config('app.url');
 
         $confirmUser = ConfirmUser::create([
             'email' => $request->input('email'),
