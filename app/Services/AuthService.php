@@ -84,7 +84,7 @@ class AuthService
             return response()->json(['message' => 'Something wrong with email sending, please try again later'], 500);
         }
 
-        return response()->json(['user_id' => $user->id], 201);
+        return response()->json(['user_id' => $user->id, 'app_url' => $app_url, 'token' => $token, 'confirm_url' => $app_url.'/signup/'.$token], 201);
     }
 
     /**

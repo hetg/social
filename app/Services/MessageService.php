@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\ChatMessageWasReceived;
 use App\Http\Requests\Message\CreateMessageRequest;
 use App\Models\Dialog;
 use App\Models\Message;
@@ -48,10 +49,12 @@ class MessageService
 
         if(!$friend) abort(404);
 
-        $chat->messages()->create([
+        $message = $chat->messages()->create([
             'sender_id' => $user->id,
             'text' => $request->input('message'),
         ]);
+
+        event(new ChatMessageWasReceived($chat, $message));
 
         return response()->json(['message' => 'Message created'],201);
     }
