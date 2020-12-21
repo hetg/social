@@ -12,3 +12,7 @@ npm-debug.log
 yarn-error.log
 /storage/api-docs/*
 !/storage/api-docs/.gitkeep
+laravel-echo-server.json
+laravel-echo-server.lock
+
+
