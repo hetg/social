@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\ConfirmUser;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
@@ -113,4 +114,23 @@ class AuthService
         return response()->json(['access_token' => $this->auth->parseToken()->refresh()]);
     }
 
+    /**
+     * @param string $token
+     * @return RedirectResponse
+     */
+    public function emailConf(string $token)
+    {
+        $conf = ConfirmUser::where('token', $token)->first();
+
+        if(!$conf){
+            return redirect()->to("https://social.hetg.net/login?accepted=false");
+        }
+
+        $user = User::where('email', $conf->email);
+
+        $user->update(['validate' => 1]);
+        $conf->delete();
+
+        return redirect()->to("https://social.hetg.net/login?accepted=true");
+    }
 }
