@@ -20,6 +20,7 @@ Route::group([
 ], function ($router) {
     Route::post('login', 'AuthController@login');
     Route::post('register', 'AuthController@register');
+    Route::get('confirm/{token}', 'AuthController@emailConf');
     Route::group([
         'middleware' => 'auth'
     ], function ($router) {

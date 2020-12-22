@@ -1,1 +1,1 @@
-<a href="{{ $app_url }}/signup/{{ $token }}">Confirm</a>
+<a href="{{ $app_url }}/api/auth/confirm/{{ $token }}">Confirm</a>

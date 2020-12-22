@@ -9,6 +9,7 @@ use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use App\Models\User;
 use App\Models\ConfirmUser;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -169,5 +170,39 @@ class AuthController extends Controller
      */
     public function refresh(){
         return $this->authService->refresh();
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/auth/confirm/{token}",
+     *     summary="Confirm email by toket",
+     *     description="Confirm email by token",
+     *     operationId="emailConf",
+     *     tags={"Auth"},
+     *     @OA\Parameter(
+     *         description="Token",
+     *         in="path",
+     *         name="token",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="string",
+     *             format="text"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token refreshed response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     *
+     * @param string $token
+     * @return RedirectResponse
+     */
+    public function emailConf(string $token){
+        return $this->authService->emailConf($token);
     }
 }
