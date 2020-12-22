@@ -44,4 +44,11 @@ class ChatMessageDeleted implements ShouldBroadcastNow
     {
         return new Channel('chat.' . $this->chat->id);
     }
+
+    /**
+     * @return string
+     */
+    public function broadCastAs(){
+        return "chat_message_deleted";
+    }
 }
