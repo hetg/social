@@ -75,7 +75,7 @@ class AuthService
 
         try {
             Mail::send('auth.email_token', ['token' => $token, 'app_url' => $app_url], function ($u) use ($user) {
-                $u->from('infok@social.hetg.com');
+                $u->from('info@social.hetg.com');
                 $u->to($user->email);
                 $u->subject('Confirm registration');
             });
