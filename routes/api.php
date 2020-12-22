@@ -41,6 +41,7 @@ Route::group([
     Route::post('{userId}/avatar', 'UserController@updateUserAvatar');
     Route::get('{userId}/friends', 'UserController@getFriends');
     Route::get('{userId}/friend-requests', 'UserController@getFriendRequests');
+    Route::delete('{userId}/friend-requests/{friendId}', 'UserController@deleteFriendRequest');
     Route::post('{userId}/add/{friendId}', 'UserController@addFriend');
     Route::post('{userId}/accept/{friendId}', 'UserController@acceptFriend');
     Route::delete('{userId}/delete/{friendId}', 'UserController@deleteFriend');

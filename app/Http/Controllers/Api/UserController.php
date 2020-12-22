@@ -457,6 +457,59 @@ class UserController extends Controller
         return $this->userService->deleteFriend($userId, $friendId);
     }
 
+
+    /**
+     * @OA\Delete(
+     *     path="/api/user/{userId}/friend-requests/{friendId}",
+     *     summary="Delete friend request by ID",
+     *     description="Delete friend request by ID",
+     *     operationId="userDeleteFriendRequest",
+     *     tags={"User"},
+     *     security={ {"bearerToken": {} }},
+     *     @OA\Parameter(
+     *         description="ID of user",
+     *         in="path",
+     *         name="userId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="ID of friend",
+     *         in="path",
+     *         name="friendId",
+     *         required=true,
+     *         example="1",
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User's password updated response",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object", example="User")
+     *         )
+     *     )
+     * )
+     * @OAS\SecurityScheme(
+     *     securityScheme="bearerToken",
+     *     type="http",
+     *     scheme="bearer"
+     * )
+     *
+     * @param int $userId
+     * @param int $friendId
+     * @return JsonResponse
+     */
+    public function deleteFriendRequest(int $userId, int $friendId){
+        return $this->userService->deleteFriendRequest($userId, $friendId);
+    }
+
     /**
      * @OA\Get(
      *     path="/api/user/{userId}/feed",

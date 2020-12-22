@@ -279,6 +279,33 @@ class UserService
 
     /**
      * @param int $userId
+     * @param int $friendId
+     * @return JsonResponse
+     */
+    public function deleteFriendRequest(int $userId, int $friendId): JsonResponse
+    {
+        $user = User::find($userId);
+        $friend = User::find($friendId);
+
+        if (!$user || !$friend){
+            abort(404);
+        }
+
+        if ($userId === $friendId){
+            abort(400);
+        }
+
+        if (!$user->hasFriendRequestReceived($friend)){
+            return response()->json(['message' => 'No friends request found'],404);
+        }
+
+        $user->deleteFriend($friend);
+
+        return response()->json(['message' => 'Friend request deleted'], 204);
+    }
+
+    /**
+     * @param int $userId
      * @return JsonResponse
      */
     public function getUserPosts(int $userId)

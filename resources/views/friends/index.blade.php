@@ -12,19 +12,6 @@
                     @include('user.partials.userblock')
                     <div class="controls">
                         <form action="{{ route('friends.delete', ['user_id' => $user->id]) }}" method="post">
-                            @if($user->dialogs()->where('first_user_id',Auth::user()->id)->first())
-                                <a href="{{ route('messages.show', ['chatId' => $user->dialogs()->where('first_user_id',Auth::user()->id)->first()['id']]) }}" class="btn btn-primary">
-                                    <i class="glyphicon glyphicon-comment"></i>
-                                </a>
-                            @elseif($user->dialogs()->where('second_user_id',Auth::user()->id)->first())
-                                <a href="{{ route('messages.show', ['chatId' => $user->dialogs()->where('second_user_id',Auth::user()->id)->first()['id']]) }}" class="btn btn-primary">
-                                    <i class="glyphicon glyphicon-comment"></i>
-                                </a>
-                            @else
-                                <a href="{{ route('dialogs.create', ['userId' => $user->id]) }}" class="btn btn-primary">
-                                    <i class="glyphicon glyphicon-comment"></i>
-                                </a>
-                            @endif
                             <input type="submit" value="Delete friend" class="btn btn-primary">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         </form>
