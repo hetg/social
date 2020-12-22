@@ -1,12 +1,7 @@
 {
 	"authHost": "http://hetg.local",
 	"authEndpoint": "/broadcasting/auth",
-	"clients": [
-		{
-			"appId": "2d9872a63dd140ea",
-			"key": "4adb91cbe6bb3a53cef82bfa4a4275c6"
-		}
-	],
+	"clients": [],
 	"database": "redis",
 	"databaseConfig": {
 		"redis": {},
