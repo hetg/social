@@ -106,7 +106,7 @@ class MessageService
 
         $message->delete();
 
-        dispatch(new ChatMessageDeleted($chat, $messageId));
+        event(new ChatMessageDeleted($chat, $messageId));
 
         return response()->json('Deleted', 204);
     }
