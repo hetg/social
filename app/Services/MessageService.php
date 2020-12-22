@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
-use App\Events\ChatMessageWasReceived;
+use App\Events\ChatMessageDeleted;
+use App\Events\ChatMessageReceived;
+use App\Events\NewMessageReceived;
 use App\Http\Requests\Message\CreateMessageRequest;
 use App\Models\Dialog;
 use App\Models\Message;
@@ -54,7 +56,8 @@ class MessageService
             'text' => $request->input('message'),
         ]);
 
-        event(new ChatMessageWasReceived($chat, $message));
+        event(new ChatMessageReceived($chat, $message));
+        event(new NewMessageReceived($chat, $message));
 
         return response()->json(['message' => 'Message created'],201);
     }
@@ -91,6 +94,7 @@ class MessageService
     public function deleteMessage(int $messageId)
     {
         $message = Message::find($messageId);
+        $chat = $message->chat;
 
         if (!$message) abort(404);
 
@@ -101,6 +105,8 @@ class MessageService
         if ($message->sender_id != $user->id) abort(403);
 
         $message->delete();
+
+        dispatch(new ChatMessageDeleted($chat, $messageId));
 
         return response()->json('Deleted', 204);
     }
