@@ -45,4 +45,11 @@ class NewMessageReceived implements ShouldBroadcastNow
     {
         return new Channel('new_message');
     }
+
+    /**
+     * @return string
+     */
+    public function broadCastAs(){
+        return "new_message_received";
+    }
 }
