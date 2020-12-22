@@ -43,6 +43,6 @@ class NewMessageReceived implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return new Channel('new-message');
+        return new Channel('new_message');
     }
 }
