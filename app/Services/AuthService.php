@@ -75,14 +75,14 @@ class AuthService
 
         try {
             Mail::send('auth.email_token', ['token' => $token, 'app_url' => $app_url], function ($u) use ($user) {
-                $u->from('heals.network@gmail.com');
+                $u->from('infok@social.hetg.com');
                 $u->to($user->email);
                 $u->subject('Confirm registration');
             });
         }catch (\Exception $exception){
             $user->delete();
             $confirmUser->delete();
-            return response()->json(['message' => 'Something wrong with email sending, please try again later'], 500);
+            return response()->json(['message' => 'Something wrong with email sending, please try again later', $exception], 500);
         }
 
         return response()->json(['user_id' => $user->id, 'app_url' => $app_url, 'token' => $token, 'confirm_url' => $app_url.'/signup/'.$token], 201);
