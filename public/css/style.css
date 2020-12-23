@@ -1,0 +1,246 @@
+textarea {
+    resize: none;
+}
+
+body{
+    background-color: whitesmoke;
+    overflow: auto;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 80px;
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 90px;
+    background-color: #3498DB;
+    text-align: center;
+    padding: 10px;
+}
+
+.footer .text-muted a,
+.footer span
+{
+    line-height: 35px;
+    margin: 5px;
+    color: #fff;
+}
+
+.footer .text-muted a i{
+    font-size: 1.3em;
+    margin: 3px;
+}
+
+a{
+    text-decoration: none !important;
+}
+
+.navbar-admin .navbar-nav >  input,
+.navbar-default .navbar-nav >  input{
+    border-radius: 0px;
+}
+
+.navbar-admin .navbar-nav > li > a:hover, .navbar-admin .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: whitesmoke;  /*Sets the text hover color on navbar*/
+    background-color: #176eb7;
+}
+
+.navbar-admin .navbar-header > a:hover, .navbar-admin .navbar-header> a:focus,
+.navbar-default .navbar-header > a:hover, .navbar-default .navbar-header> a:focus{
+    color: whitesmoke;
+}
+
+.navbar-admin .navbar-brand,
+.navbar-default .navbar-brand{
+    color: whitesmoke;
+}
+
+.navbar-admin .navbar-nav > .active > a, .navbar-admin .navbar-nav > .active >
+a:hover, .navbar-admin .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active >
+a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: white; /*BACKGROUND color for active*/
+    background-color: #176eb7;
+}
+
+.navbar-default {
+    background-color: #337ab7;
+    border: none;
+    border-radius: 0px;
+}
+
+.navbar-admin {
+    background-color: #34495E;
+    border: none;
+    border-radius: 0px;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+    color: whitesmoke;
+    text-decoration: none;
+    background-color: black;  /*change color of links in drop down here*/
+}
+
+.nav > li > a:hover,
+.nav > li > a:focus {
+    text-decoration: none;
+    color: whitesmoke;
+    background-color: silver; /*Change rollover cell color here*/
+}
+
+
+.navbar-admin .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > a {
+    color: white; /*Change active text color here*/
+    padding: 15px;
+}
+
+.navbar-default .navbar-nav > li.dropdown > a,
+.navbar-admin .navbar-nav > li.dropdown > a {
+    padding: 10px;
+}
+
+.navbar-admin.navbar-nav>.open>a, .navbar-admin .navbar-nav>.open>a:focus,
+.navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:focus,
+.navbar-admin .navbar-nav>.open>a:hover,
+.navbar-default .navbar-nav>.open>a:hover {
+    color: whitesmoke;
+    background-color: #176eb7;
+}
+
+img.avatar-sm {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+img.avatar-mini {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+}
+
+
+img.avatar-lg {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%;
+}
+
+a.notification{
+    padding: 15px !important;
+}
+
+li.dropdown > a.notification > i{
+    font-size: 18px;
+    color: #07589c;
+}
+
+li.open > a.notification > i{
+    font-size: 18px;
+    color: whitesmoke;
+}
+
+.main-block {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 5px;
+    background: #ECF0F1;
+}
+
+.display-block{
+    height: 25em;
+    overflow: auto;
+}
+
+.dialogs-show{
+    height: 37em;
+    overflow: auto;
+}
+
+
+.display-block .message.text-left{
+    background-color: #e6e3f5;
+    -webkit-box-shadow: 0 0 5px #afaad6;
+    -moz-box-shadow: 0 0 5px #afaad6;
+    box-shadow: 0 0 5px #afaad6;
+    border-radius: 0px 10px 10px 10px;
+ }
+
+.display-block .message.text-right{
+    background-color: #d4ceec;
+    -webkit-box-shadow: 0 0 5px #7c75b1;
+    -moz-box-shadow: 0 0 5px #7c75b1;
+    box-shadow: 0 0 5px #7c75b1;
+    border-radius: 10px 0px 10px 10px;
+}
+
+.message *{
+    padding: 0px 5px;
+}
+
+.media .last-message {
+    margin-top: 3px !important;
+}
+
+.media .last-message .mes{
+    text-decoration: none;
+    color: black;
+}
+
+img.avatar-min{
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}
+
+img.attachment-sm{
+    height: 50px;
+    margin: 5px;
+}
+
+img.attachment-status{
+    height: 100px;
+    margin: 5px;
+}
+
+#attachments-container{
+    margin: 5px;
+}
+
+::-webkit-scrollbar
+{
+    width: 6px;
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 3px;
+    background-color: #8ca5bb;
+}
+
+.navbar-form[role='search'] .input-group-addon{
+    background-color: #3498DB;
+    color: #fff;
+}
+
+.online{
+    color: #4cae4c;
+    font-size: 0.7em;
+}
+
+.controls{
+    margin: 5px;
+}
